@@ -1,17 +1,18 @@
 CC=gcc
-CFLAGS=-g -c -ansi -pedantic -Wall -Werror
+CFLAGS= -c -std=c89 -g -pedantic -Wall -Werror -I./include/
 SRC=$(wildcard src/*.c)
-OBJ=$(SRC:src/%.c=bin/%.o)
+OBJ=$(SRC:src/%.c=build/%.o)
 PROJECT_NAME=bmp-editor
 
 all: $(OBJ)
-	$(CC) $(OBJ) -o bin/$(PROJECT_NAME)
+	$(CC) -lm -o build/$(PROJECT_NAME) $(OBJ)
 
-$(OBJ): $(SRC)
-	$(CC) $(CFLAGS) -c $< -o $@
+build/%.o: src/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 
 run: all
-	./bin/$(PROJECT_NAME)
+	./build/$(PROJECT_NAME)
 
 clean:
-	rm -f ./bin/* 
+	rm -rf ./build/* 
