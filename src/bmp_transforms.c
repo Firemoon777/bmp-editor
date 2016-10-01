@@ -13,6 +13,11 @@ int max(int a, int b)
 	return a > b ? a : b;
 }
 
+int min(int a, int b)
+{
+	return a < b ? a : b;
+}
+
 /* Rotation formula
  * x' = x*cos a - y*sin a
  * y' = x*sin a + y*cos a
@@ -49,6 +54,55 @@ rotate(struct image_t* src, double angle, struct image_t* result)
 			}
 			
 			result->pixels[i * (result->width) + j] = src->pixels[new_y * (src->width) + new_x];
+		}
+	}
+	return TRANSFORM_OK;
+}
+
+double gauss_function(int x, int y, unsigned long radius)
+{
+	double r = 20.1f;
+	return (1/(2*M_PI*r*r))*exp((x*x+y*y)/(2.f*r*r));
+}
+
+
+struct pixel_t setPixel(struct image_t* image, int x, int y, unsigned long r)
+{
+	struct pixel_t pixel, current;
+	double red = 0, green = 0, blue = 0, f, wsum = 0;
+	int i, j, count = 0;
+	for(i = max(0, y - r); i <= min(image->height, y + r); i++)
+	{
+		for(j = max(0, x - r); j <= min(image->width, x + r); j++)
+		{
+			f = gauss_function(j - x, i - y, r);
+			wsum += f;
+			current = image->pixels[i * (image->width) + j];
+			red += current.r * f;
+			green += current.g * f;
+			blue += current.b * f;
+			count++;
+		}
+	}
+	pixel.r = red / wsum;
+	pixel.g = green / wsum;
+	pixel.b = blue / wsum;
+	/*printf("Current pixel: %f / %i = %f\n", red, count, red / count);*/
+	return pixel;
+}
+
+bmp_transform_error_code_t
+gaussian_blur(struct image_t* src, unsigned long radius, struct image_t* result)
+{
+	int i, j;
+	result->width = src->width;
+	result->height = src->height;
+	result->pixels = (struct pixel_t*)malloc(sizeof(struct pixel_t) * result->height * result->width);
+	for(i = 0; i < src->height; i++)
+	{
+		for(j = 0; j < src->width; j++)
+		{
+			result->pixels[i * result->width + j] = setPixel(src, j, i, radius);
 		}
 	}
 	return TRANSFORM_OK;
