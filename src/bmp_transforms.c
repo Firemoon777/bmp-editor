@@ -22,7 +22,7 @@ int min(int a, int b) {
  */
  
 bmp_transform_error_code_t
-rotate(struct image_t* src, double angle, struct image_t* result) {
+rotate(struct image_t* const src, double angle, struct image_t* const result) {
 	int i, j, x, y, new_x, new_y;
 	double v_sin, v_cos;
 	struct pixel_t white_pixel = {255, 255, 255};
@@ -51,13 +51,13 @@ rotate(struct image_t* src, double angle, struct image_t* result) {
 	return TRANSFORM_OK;
 }
 
-double gauss_function(int x, int y, unsigned long radius) {
+static double gauss_function(int x, int y, unsigned long radius) {
 	double r = 20.1f;
 	return (1/(2*M_PI*r*r))*exp((x*x+y*y)/(2.f*r*r));
 }
 
 
-struct pixel_t setPixel(struct image_t* image, int x, int y, unsigned long r) {
+static struct pixel_t setPixel(struct image_t* const image, int x, int y, unsigned long r) {
 	struct pixel_t pixel, current;
 	double red = 0, green = 0, blue = 0, f, wsum = 0;
 	int i, j, count = 0;
@@ -79,7 +79,7 @@ struct pixel_t setPixel(struct image_t* image, int x, int y, unsigned long r) {
 }
 
 bmp_transform_error_code_t
-gaussian_blur(struct image_t* src, unsigned long radius, struct image_t* result) {
+gaussian_blur(struct image_t* const src, unsigned long radius, struct image_t* const result) {
 	int i, j;
 	result->width = src->width;
 	result->height = src->height;

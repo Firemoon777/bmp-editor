@@ -3,8 +3,8 @@
 #include <bmp.h>
 #include <bmp_reader.h>
 
-bmp_header_t 
-read_bmp_header(FILE* input) {
+static bmp_header_t 
+read_bmp_header(FILE* const input) {
 	bmp_header_t header;
 	fseek(input, 0, SEEK_SET);
 	fread(&header, sizeof(bmp_header_t), 1, input);
@@ -12,7 +12,7 @@ read_bmp_header(FILE* input) {
 }
 
 read_code_error_t
-from_bmp(FILE* input, struct image_t* const read) {
+from_bmp(FILE* const input, struct image_t* const read) {
 	bmp_header_t bmp_header;
 	int i = 0, j = 0, offset;
 	if(input == NULL) {

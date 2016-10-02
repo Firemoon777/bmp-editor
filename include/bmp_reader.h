@@ -8,8 +8,6 @@ typedef enum {
 	READ_UNSUPPORTED_BIT_COUNT
 } read_code_error_t;
 
-bmp_header_t read_bmp_header(FILE* input);
-
 read_code_error_t from_bmp(FILE*, struct image_t* const);
 
 #endif

@@ -3,7 +3,7 @@
 #include <bmp.h>
 #include <bmp_writer.h>
 
-write_code_error_t to_bmp(FILE* output, struct image_t* image) {
+write_code_error_t to_bmp(FILE* const output, struct image_t* const image) {
 	int i, j;
 	bmp_header_t header;
 	int offset;
