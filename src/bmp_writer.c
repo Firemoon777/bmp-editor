@@ -3,19 +3,16 @@
 #include <bmp.h>
 #include <bmp_writer.h>
 
-write_code_error_t to_bmp(FILE* output, struct image_t* image)
-{
+write_code_error_t to_bmp(FILE* output, struct image_t* image) {
 	int i, j;
 	union bmp_union_t file_header;
 	bmp_header_t header;
 	int offset;
-	if(output == NULL)
-	{
+	if(output == NULL) {
 		return WRITE_FILE_ERROR;
 	}
 	offset = image->width * sizeof(struct pixel_t) % 4;
-	if(offset != 0)
-	{
+	if(offset != 0) {
 		offset = 4 - offset;
 	} 
 	header.bfType = 0x4d42;
@@ -38,10 +35,8 @@ write_code_error_t to_bmp(FILE* output, struct image_t* image)
 	fwrite(&file_header.buff, sizeof(char)*2, 1, output);
 	fwrite(&file_header.buff[4], sizeof(char)*52*8, 1, output);
 	fseek(output, 54, SEEK_SET);
-	for(i = 0; i < image->height; i++)
-	{
-		for(j = 0; j < image->width; j++)
-		{
+	for(i = 0; i < image->height; i++) {
+		for(j = 0; j < image->width; j++) {
 			fwrite(&image->pixels[i*(image->width) + j], sizeof(struct pixel_t), 1, output);
 		}
 		fseek(output, offset, SEEK_CUR); 
