@@ -5,11 +5,10 @@
 
 bmp_header_t 
 read_bmp_header(FILE* input) {
-	union bmp_union_t header;
+	bmp_header_t header;
 	fseek(input, 0, SEEK_SET);
-	fread(&header.buff, sizeof(char)*2, 1, input);
-	fread(&header.buff[4], sizeof(char)*52*8, 1, input);
-	return header.header;
+	fread(&header, sizeof(bmp_header_t), 1, input);
+	return header;
 }
 
 read_code_error_t

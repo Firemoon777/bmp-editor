@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#pragma pack(push, 2)
 typedef struct {
 	uint16_t bfType;
 	uint32_t bfileSize;
@@ -21,11 +22,7 @@ typedef struct {
 	uint32_t biClrUsed;
 	uint32_t biClrImportant;
 } bmp_header_t;
-
-union bmp_union_t {
-	bmp_header_t header;
-	char buff[432];
-};
+#pragma pack(pop)
 
 struct pixel_t { 
 	unsigned char b,g,r; 

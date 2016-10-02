@@ -5,7 +5,6 @@
 
 write_code_error_t to_bmp(FILE* output, struct image_t* image) {
 	int i, j;
-	union bmp_union_t file_header;
 	bmp_header_t header;
 	int offset;
 	if(output == NULL) {
@@ -31,9 +30,7 @@ write_code_error_t to_bmp(FILE* output, struct image_t* image) {
 	header.biYPelsPerMeter = 0xb13;
 	header.biClrUsed = 0;
 	header.biClrImportant = 0;
-	file_header.header = header;
-	fwrite(&file_header.buff, sizeof(char)*2, 1, output);
-	fwrite(&file_header.buff[4], sizeof(char)*52*8, 1, output);
+	fwrite(&header, sizeof(bmp_header_t)*2, 1, output);
 	fseek(output, 54, SEEK_SET);
 	for(i = 0; i < image->height; i++) {
 		for(j = 0; j < image->width; j++) {
