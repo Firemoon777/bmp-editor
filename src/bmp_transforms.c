@@ -41,11 +41,10 @@ rotate(struct image_t* src, double angle, struct image_t* result) {
 			y = i - result->height / 2;
 			new_x = ((x*v_cos - y*v_sin)) + src->width / 2;
 			new_y = ((x*v_sin + y*v_cos)) + src->height / 2; 
-			if(new_x > src->width || new_y > src->height) {
+			if(new_x >= src->width || new_y >= src->height) {
 				result->pixels[i * (result->width) + j] = white_pixel;
 				continue;
 			}
-			
 			result->pixels[i * (result->width) + j] = src->pixels[new_y * (src->width) + new_x];
 		}
 	}
@@ -62,8 +61,8 @@ struct pixel_t setPixel(struct image_t* image, int x, int y, unsigned long r) {
 	struct pixel_t pixel, current;
 	double red = 0, green = 0, blue = 0, f, wsum = 0;
 	int i, j, count = 0;
-	for(i = max(0, y - r); i <= min(image->height, y + r); i++) {
-		for(j = max(0, x - r); j <= min(image->width, x + r); j++) {
+	for(i = max(0, y - r); i <= min(image->height-1, y + r); i++) {
+		for(j = max(0, x - r); j <= min(image->width-1, x + r); j++) {
 			f = gauss_function(j - x, i - y, r);
 			wsum += f;
 			current = image->pixels[i * (image->width) + j];
@@ -76,7 +75,6 @@ struct pixel_t setPixel(struct image_t* image, int x, int y, unsigned long r) {
 	pixel.r = red / wsum;
 	pixel.g = green / wsum;
 	pixel.b = blue / wsum;
-	/*printf("Current pixel: %f / %i = %f\n", red, count, red / count);*/
 	return pixel;
 }
 
