@@ -24,13 +24,4 @@ typedef struct {
 } bmp_header_t;
 #pragma pack(pop)
 
-struct pixel_t { 
-	unsigned char b,g,r; 
-};
-
-struct image_t {
-	uint32_t width, height;
-	struct pixel_t* pixels;
-};
-
 #endif

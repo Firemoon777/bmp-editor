@@ -1,140 +1,66 @@
 #include <stdio.h>
+#include <plugin.h>
+#include <llist.h>
 #include <stdlib.h>
-#include <bmp.h>
-#include <bmp_reader.h>
-#include <bmp_writer.h>
-#include <bmp_transforms.h>
+#include <image.h>
 #include <stdint.h>
 #include <time.h>
 #include <malloc.h>
+
+void print_version() {
+	printf("bmp-editor v2.0.0\n");
+}
 
 FILE *image_input, *image_output;
 
 int main(int argc, char** argv) {
 	struct image_t* image = (struct image_t*)malloc(sizeof(struct image_t));
 	struct image_t* new_image = NULL;
-	double time_spent, angle = 90.f;
-	char* endPtr;
-	clock_t begin, end;
-	int i_src = 0, i_dest = 0, i, verbose = 0, rotation = 0, gauss = 0;
-	unsigned long radius;
-	if(argc < 3) {
-		fprintf(stderr, "Usage: %s [options] source destination\n", argv[0]);
-		fprintf(stderr, "Options:\n");
-		fprintf(stderr, "    -a n      rotate image on n degrees\n");
-		fprintf(stderr, "    -g r      gaussian blur with radius r\n");
-		fprintf(stderr, "    -v        be verbose\n");
-		return 0;
-	}
+	llist_t* registered_flags, *current;
+	/*register_plugin_error_code_t err;*/
+	flag_t version;
+	int i = 0;
+	version.name = "-v";
+	version.type = FUNC_UNKNOWN;
+	version.func_ptr = &print_version;
+	registered_flags = llist_create(version);
+	/* TODO:
+	 * Dynamic check plugins/ *.so
+	 * Error parsing
+	 */
+	register_plugin(registered_flags, "./plugins/bmp_reader.so", "bmp_reader");
+	register_plugin(registered_flags, "./plugins/bmp_writer.so", "bmp_writer");
+	register_plugin(registered_flags, "./plugins/blur.so", "blur");
+	register_plugin(registered_flags, "./plugins/rotate.so", "rotate");
 	for(i = 1; i < argc; i++) {
-		if(argv[i][0] != '-') {
-			i_src = i_dest;
-			i_dest = i;
-		} else if (argv[i][1] == 'a') {
-			angle = strtod(argv[i+1], &endPtr);
-			if(endPtr == argv[i+1]) {
-				fprintf(stderr, "Incorrect angle\n");
-				return -1;
-			}
-			rotation = 1;
-			i++;
-		} else if(argv[i][1] == 'v') {
-			verbose = 1;
-		} else if(argv[i][1] == 'g') {
-			radius = strtoul(argv[i+1], &endPtr, 10);
-			if(endPtr == argv[i+1] || argv[i+1][0] == '-') {
-				fprintf(stderr, "Incorrect radius\n");
-				return -1;
-			}
-			gauss = 1;
-			i++;
-		}
-	}
-	image_input = fopen(argv[i_src], "rb");
-	image_output = fopen(argv[i_dest], "wb");
-	
-	begin = clock();
-	switch(from_bmp(image_input, image)) {
-		case READ_FILE_ERROR:
-			fprintf(stderr, "Cannot open file\n");
+		current = llist_find_by_name(registered_flags, argv[i]);
+		if(current == NULL) {
+			printf("Unknown option: %s\n", argv[i]);
 			return 1;
-		case READ_UNSUPPORTED_IMAGE_FORMAT:
-			fprintf(stderr, "Incorrect file format.\nSupport only 24bit BMP images\n");
-			return 2;
-			
-		case READ_UNSUPPORTED_BIT_COUNT:
-			fprintf(stderr, "Incorrect bitCount in BMP.\nSupport only 24bit BMP images\n");
-			return 3;
-		case READ_OK:
-			if(verbose)
-				printf("Input size: %ix%ix24\n", image->width, image->height);
-			break;
-	}
-	end = clock();
-	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	if(verbose)
-		printf("Reading time: %f seconds\n", time_spent);
-		
-	if(rotation) {
-		begin = clock();
-		new_image = (struct image_t*)malloc(sizeof(struct image_t));
-		switch(rotate(image, angle, new_image)) {
-			case TRANSFORM_NOT_IMPLEMENTED:
-				fprintf(stderr, "Avaliable rotation angle: [-90; 90] degrees\n");
-				return 4;
-			case TRANSFORM_OK:						
-				free(image->pixels);
+		}
+		switch(current->value.type)
+		{
+			case FUNC_IO:
+				printf("IO\n");
+				printf("result: %i\n", ((int(*)(char*, image_t*))current->value.func_ptr)(argv[i+1], image));
+				break;
+			case FUNC_TRANSFORM:
+				printf("TRANSFORM\n");
+				new_image = (struct image_t*)malloc(sizeof(struct image_t));
+				printf("result: %i\n", ((int(*)(image_t*, image_t*, char*))current->value.func_ptr)(image, new_image, argv[i+1]));
 				free(image);
 				image = new_image;
-				new_image = NULL;	
+				new_image = NULL;
+				break;
+			case FUNC_UNKNOWN:
+				printf("WAT\n");
 				break;
 		}
-		end = clock();
-		time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-		if(verbose)
-			printf("Rotation time: %f seconds\n", time_spent);
+		i += current->value.argc;
 	}
-	
-	if(gauss) {
-		begin = clock();
-		new_image = (struct image_t*)malloc(sizeof(struct image_t));
-		switch(gaussian_blur(image, radius, new_image)) {
-			case TRANSFORM_NOT_IMPLEMENTED:
-				fprintf(stderr, "Stop. What?\n");
-				return 4;
-			case TRANSFORM_OK:						
-				free(image->pixels);
-				free(image);
-				image = new_image;
-				new_image = NULL;	
-				break;
-		}
-		end = clock();
-		time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-		if(verbose)
-			printf("Gauss time: %f seconds\n", time_spent);
-	}
-	
-	begin = clock();
-	if(verbose)
-		printf("Output size: %ix%ix24\n", image->width, image->height);
-	switch(to_bmp(image_output, image)) {
-		case WRITE_FILE_ERROR:
-			fprintf(stderr, "Cannot open file\n");
-			return 1;
-			
-		case WRITE_OK:
-			break;
-	}
-	end = clock();
-	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	if(verbose)
-		printf("Writing time: %f seconds\n", time_spent);
-	
-	
-	fclose(image_input);
-	fclose(image_output);
-	free(image->pixels);
-	free(image);
+	/* TODO:
+	 * Memory free
+	 * Dynamic dlclose based on all loaded and registered plugins
+	 */
 	return 0;
 }

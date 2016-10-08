@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <bmp.h>
-#include <bmp_writer.h>
+#include "bmp.h"
+#include "bmp_writer.h"
 
-write_code_error_t to_bmp(FILE* const output, struct image_t* const image) {
+write_code_error_t to_bmp(char* const output_path, struct image_t* const image) {
 	int i, j;
 	bmp_header_t header;
 	int offset;
+	FILE* output = fopen(output_path, "wb");
 	if(output == NULL) {
 		return WRITE_FILE_ERROR;
 	}
@@ -38,5 +39,6 @@ write_code_error_t to_bmp(FILE* const output, struct image_t* const image) {
 		}
 		fseek(output, offset, SEEK_CUR); 
 	}
+	fclose(output);
 	return WRITE_OK;
 }

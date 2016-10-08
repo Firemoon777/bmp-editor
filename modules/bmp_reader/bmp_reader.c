@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <bmp.h>
-#include <bmp_reader.h>
+#include "bmp.h"
+#include "bmp_reader.h"
 
 static bmp_header_t 
 read_bmp_header(FILE* const input) {
@@ -12,7 +12,8 @@ read_bmp_header(FILE* const input) {
 }
 
 read_code_error_t
-from_bmp(FILE* const input, struct image_t* const read) {
+from_bmp(char* const input_path, struct image_t* const read) {
+	FILE* input = fopen(input_path, "rb");
 	bmp_header_t bmp_header;
 	int i = 0, j = 0, offset;
 	if(input == NULL) {
@@ -39,6 +40,6 @@ from_bmp(FILE* const input, struct image_t* const read) {
 		} 
 		fseek(input, offset, SEEK_CUR);
 	}
-	
+	fclose(input);
 	return READ_OK;
 }
