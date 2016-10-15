@@ -11,8 +11,7 @@ register_plugin_error_code_t register_plugin(llist_t* flags, char* path, char* n
 	char init_name[256];
 	int result;
 	flag_t data;
-	printf("Trying to register %s\n", path);
-	strcpy(init_name, "__init_");
+	strcpy(init_name, INIT_PREFIX);
 	strcat(init_name, name);
 	plugin = dlopen(path, RTLD_NOW);
 	if(!plugin) {
@@ -28,12 +27,10 @@ register_plugin_error_code_t register_plugin(llist_t* flags, char* path, char* n
 		dlclose(plugin);
 		return REGISTER_INIT_NON_ZERO;
 	}
-	if(llist_add(flags, data))
-	{
+	if(llist_add(flags, data)) {
 		dlclose(plugin);
 		return REGISTER_FLAG_CONFLICT;
 	}
-	printf("%s loaded and registered\n", path);
 	return REGISTER_OK;
 }
 

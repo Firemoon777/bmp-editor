@@ -14,6 +14,7 @@ void __init_bmp_reader(int* result, flag_t *init_data) {
 	init_data->name = (char*)malloc(3*sizeof(char));
 	strcpy(init_data->name, "-ib");
 	init_data->func_ptr = &from_bmp;
+	init_data->instruction = "read image from 24bit bmp file";
 	init_data->argc = 1;
 	init_data->type = FUNC_IO;
 	/*printf("__init_reader: Init OK [0]\n");*/
