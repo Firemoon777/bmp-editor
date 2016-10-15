@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <time.h>
+
 void print_version() {
 	printf("bmp-editor v2.0.0\n");
 }
@@ -34,6 +36,8 @@ int main(int argc, char** argv) {
 	register_plugin_error_code_t err;
 	flag_t version;
 	int i = 0;
+	int result;
+	/*struct timespec mt1, mt2; */
 	
 	DIR *dp;
     struct dirent *entry;
@@ -78,7 +82,7 @@ int main(int argc, char** argv) {
 						fprintf(stderr, "Cannot open %s.so\n", plugin_name);
 						break;
 					case REGISTER_INIT_NOT_FOUND:
-						fprintf(stderr, "Cannot found %s%s\n", INIT_PREFIX, plugin_name);
+						fprintf(stderr, "Cannot found %s%s in %s.so\n", INIT_PREFIX, plugin_name, plugin_name);
 						break;
 					case REGISTER_INIT_NON_ZERO:
 						fprintf(stderr, "Init of %s.so exits with non-zero code\n", plugin_name);
@@ -99,13 +103,17 @@ int main(int argc, char** argv) {
 			printf("Unknown option: %s\n", argv[i]);
 			return 1;
 		}
+		result = 0;
 		switch(current->value.type) {
 			case FUNC_IO:
-				printf("result: %i\n", ((int(*)(char*, image_t*))current->value.func_ptr)(argv[i+1], image));
+				result = ((int(*)(char*, image_t*))current->value.func_ptr)(argv[i+1], image);
 				break;
 			case FUNC_TRANSFORM:
 				new_image = (struct image_t*)malloc(sizeof(struct image_t));
-				printf("result: %i\n", ((int(*)(image_t*, image_t*, char*))current->value.func_ptr)(image, new_image, argv[i+1]));
+				/*clock_gettime (CLOCK_REALTIME, &mt1);*/
+				result = ((int(*)(image_t*, image_t*, char**))current->value.func_ptr)(image, new_image, &argv[i+1]);
+				/*clock_gettime (CLOCK_REALTIME, &mt2);*/
+				/*printf("Time spend: %ld ns\n", 1000000000*(mt2.tv_sec - mt1.tv_sec)+(mt2.tv_nsec - mt1.tv_nsec));*/
 				free(image);
 				image = new_image;
 				new_image = NULL;
@@ -117,11 +125,10 @@ int main(int argc, char** argv) {
 				((void(*)())current->value.func_ptr)();
 				break;
 		}
+		if(result) {
+			printf("flag %s exits with code %i\n", argv[i], result);
+		}
 		i += current->value.argc;
 	}
-	/* TODO:
-	 * Memory free
-	 * Dynamic dlclose based on all loaded and registered plugins
-	 */
 	return 0;
 }

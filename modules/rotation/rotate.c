@@ -21,13 +21,13 @@ int min(int a, int b) {
  */
  
 bmp_transform_error_code_t
-rotate(struct image_t* const src, struct image_t* const result, char* argv) {
+rotate(struct image_t* const src, struct image_t* const result, char** argv) {
 	int i, j, x, y, new_x, new_y;
 	double v_sin, v_cos, angle;
 	char* end_ptr;
 	struct pixel_t white_pixel = {255, 255, 255};
-	angle = strtod(argv, &end_ptr);
-	if(end_ptr == argv) {
+	angle = strtod(argv[0], &end_ptr);
+	if(end_ptr == argv[0]) {
 		return TRANSFORM_PARSE_ERROR;
 	}
 	if(angle < -90 || 90 < angle) {

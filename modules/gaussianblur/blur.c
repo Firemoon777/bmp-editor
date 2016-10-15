@@ -43,12 +43,12 @@ static struct pixel_t setPixel(struct image_t* const image, int x, int y, unsign
 }
 
 bmp_transform_error_code_t
-gaussian_blur(struct image_t* const src, struct image_t* const result, char* argv) {
+gaussian_blur(struct image_t* const src, struct image_t* const result, char** argv) {
 	int i, j;
 	unsigned long radius;
 	char* end_ptr;
-	radius = strtoul(argv, &end_ptr, 10);
-	if(argv[0] == '-' || end_ptr == argv) {
+	radius = strtoul(argv[0], &end_ptr, 10);
+	if(argv[0][0] == '-' || end_ptr == argv[0]) {
 		return TRANSFORM_PARSE_ERROR;
 	}
 	result->width = src->width;

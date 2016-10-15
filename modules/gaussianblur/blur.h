@@ -10,5 +10,5 @@ typedef enum {
 } bmp_transform_error_code_t; 
 
 bmp_transform_error_code_t
-gaussian_blur(struct image_t* const src, struct image_t* const result, char* argv);
+gaussian_blur(struct image_t* const src, struct image_t* const result, char** argv);
 #endif

@@ -9,7 +9,7 @@ typedef struct llist_t llist_t;
  
 typedef enum {
 	FUNC_IO = 0,		/* int(*)(char*, image_t*) */
-	FUNC_TRANSFORM, 	/* int(*)(image_t* src, image_t* result, char* argv)*/
+	FUNC_TRANSFORM, 	/* int(*)(image_t* src, image_t* result, char** argv)*/
 	FUNC_VOID,			/* void(*)(void) */
 	FUNC_HELP			/* void(*)(llist_t*) */
 } func_type_t;

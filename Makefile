@@ -6,12 +6,12 @@ OBJ=$(SRC:src/%.c=build/%.o)
 PROJECT_NAME=bmp-editor
 
 all: plugins $(OBJ)
-	$(CC) -lm -ldl -o $(PROJECT_NAME) $(OBJ)
+	$(CC) -lm -ldl -lrt -o $(PROJECT_NAME) $(OBJ)
 
 build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-plugins: bmp_reader.so bmp_writer.so blur.so rotate.so
+plugins: bmp_reader.so bmp_writer.so blur.so rotate.so mrotate.so
 	
 blur.so: 
 	$(CC) $(SFLAGS) -o plugins/$@ modules/gaussianblur/*.c
@@ -24,6 +24,9 @@ bmp_writer.so:
 	
 rotate.so: 
 	$(CC) $(SFLAGS) -o plugins/$@ modules/rotation/*.c
+
+mrotate.so:
+	$(CC) $(SFLAGS) -lpthread -o plugins/$@ modules/pthread_rotation/*.c
 
 run: all
 	./build/$(PROJECT_NAME)
