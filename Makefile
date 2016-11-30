@@ -11,7 +11,7 @@ all: plugins $(OBJ)
 build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-plugins: bmp_reader.so bmp_writer.so blur.so rotate.so mrotate.so
+plugins: bmp_reader.so bmp_writer.so blur.so rotate.so mrotate.so sepia_c.so
 	
 blur.so: 
 	$(CC) $(SFLAGS) -o plugins/$@ modules/gaussianblur/*.c
@@ -27,6 +27,9 @@ rotate.so:
 
 mrotate.so:
 	$(CC) $(SFLAGS) -lpthread -o plugins/$@ modules/pthread_rotation/*.c
+	
+sepia_c.so:
+	$(CC) $(SFLAGS) -lpthread -o plugins/$@ modules/sepia_c/*.c
 
 run: all
 	./build/$(PROJECT_NAME)

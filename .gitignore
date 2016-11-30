@@ -2,3 +2,4 @@
 build/
 *.bmp
 plugins/
+bmp-editor
