@@ -40,6 +40,6 @@ sepia(struct image_t* const src, struct image_t* const result, char** argv) {
 	}
 	end = clock();
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	printf("Pure sepia time: %f\n", time_spent);
+	printf("Pure C sepia time: %f\n", time_spent);
 	return TRANSFORM_OK;
 }
