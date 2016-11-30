@@ -20,7 +20,6 @@ static struct pixel_t setPixel(struct image_t* const image, int x, int y) {
 	pixel.r = sat(old.r * c[0][0] + old.g * c[0][1] + old.b * c[0][2]);
 	pixel.g = sat(old.r * c[1][0] + old.g * c[1][1] + old.b * c[1][2]);
 	pixel.b = sat(old.r * c[2][0] + old.g * c[2][1] + old.b * c[2][2]);
-	
 	return  pixel;
 }
 
