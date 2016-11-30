@@ -4,7 +4,7 @@
 #include <malloc.h>
 #include "bmp_reader.h"
 
-void __init_bmp_reader(int* result, flag_t *init_data) {
+void __init_bmp_reader(int* result, plugin_action_info_t *init_data) {
 	/*printf("__init_reader: Init started\n");*/
 	if(init_data == NULL || result == NULL)
 	{

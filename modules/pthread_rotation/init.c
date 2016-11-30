@@ -4,7 +4,7 @@
 #include <malloc.h>
 #include "rotate.h"
 
-void __init_mrotate(int* result, flag_t *init_data) {
+void __init_mrotate(int* result, plugin_action_info_t *init_data) {
 	if(init_data == NULL || result == NULL)
 	{ 
 		*result = 1;

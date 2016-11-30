@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -c -std=c89 -g -Wall -Werror -I./include/ 
+CFLAGS= -ansi -c -std=c89 -g -Wall -Werror -I./include/ 
 SFLAGS= -shared -std=c89 -g -Wall -Werror -I./include/ -fPIC -lm 
 SRC=$(wildcard src/*.c)
 OBJ=$(SRC:src/%.c=build/%.o)

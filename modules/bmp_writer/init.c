@@ -4,7 +4,7 @@
 #include <malloc.h>
 #include "bmp_writer.h"
 
-void __init_bmp_writer(int* result, flag_t *init_data) {
+void __init_bmp_writer(int* result, plugin_action_info_t *init_data) {
 	/*printf("__init_writer: Init started\n");*/
 	if(init_data == NULL || result == NULL)
 	{

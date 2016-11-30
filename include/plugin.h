@@ -12,15 +12,15 @@ typedef enum {
 	FUNC_TRANSFORM, 	/* int(*)(image_t* src, image_t* result, char** argv)*/
 	FUNC_VOID,			/* void(*)(void) */
 	FUNC_HELP			/* void(*)(llist_t*) */
-} func_type_t;
+} plugin_func_type_t;
 
 typedef struct {
 	char* name;
 	char* instruction;
 	void* func_ptr;
 	int argc;
-	func_type_t type;
-} flag_t;
+	plugin_func_type_t type;
+} plugin_action_info_t;
 
 typedef enum {
 	REGISTER_OK = 0,
@@ -28,8 +28,9 @@ typedef enum {
 	REGISTER_INIT_NOT_FOUND,
 	REGISTER_INIT_NON_ZERO,
 	REGISTER_FLAG_CONFLICT
-} register_plugin_error_code_t;
+} plugin_register_error_code_t;
 
-register_plugin_error_code_t register_plugin(llist_t* flags, char* path, char* name);
+plugin_register_error_code_t plugin_register(llist_t* flags, char* path, char* name);
+plugin_register_error_code_t plugin_search_in_dir(llist_t* flags, char* dir);
 
 #endif

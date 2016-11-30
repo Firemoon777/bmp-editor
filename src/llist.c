@@ -4,14 +4,14 @@
 #include <malloc.h>
 #include <plugin.h>
 
-llist_t* llist_create(flag_t value) {
+llist_t* llist_create(llist_type_t value) {
 	llist_t* item = (llist_t*)malloc(sizeof(llist_t));
 	item->next = NULL;
 	item->value = value;
 	return item;
 }
 
-int llist_add(llist_t* list, flag_t value) {
+int llist_add(llist_t* list, llist_type_t value) {
 	while(list != NULL) {
 		if(strcmp(list->value.name, value.name) == 0)
 			return 1;
