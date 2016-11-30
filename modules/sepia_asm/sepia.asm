@@ -32,8 +32,10 @@ c3_3: dd 0.189, 0.131, 0.168, 0.189
 
 align 16 
 max: dd 255.0, 255.0, 255.0, 255.0
-sse:
-	
+align 16 
+test: dd 2.0, 3.0, 1.0, 2.0
+
+sse:	
 	movq xmm0, [rdi]
 	shufps xmm0, xmm0, 0b01000000
 	movq xmm1, [rsi]
@@ -65,9 +67,9 @@ sse:
 	shufps xmm1, xmm1, 0b01010000
 	movq xmm2, [rdx]
 	shufps xmm2, xmm2, 0b01010000
-	movdqa xmm3, [rel c1_2]
-	movdqa xmm4, [rel c2_2]
-	movdqa xmm5, [rel c3_2]
+	shufps xmm3, xmm3, 0b01001001
+	shufps xmm4, xmm4, 0b01001001
+	shufps xmm5, xmm5, 0b01001001
 	mulps xmm0, xmm3
 	mulps xmm1, xmm4
 	mulps xmm2, xmm5
@@ -90,9 +92,9 @@ sse:
 	shufps xmm1, xmm1, 0b01010100
 	movq xmm2, [rdx]
 	shufps xmm2, xmm2, 0b01010100
-	movdqa xmm3, [rel c1_3]
-	movdqa xmm4, [rel c2_3]
-	movdqa xmm5, [rel c3_3]
+	shufps xmm3, xmm3, 0b01001001
+	shufps xmm4, xmm4, 0b01001001
+	shufps xmm5, xmm5, 0b01001001
 	mulps xmm0, xmm3
 	mulps xmm1, xmm4
 	mulps xmm2, xmm5
