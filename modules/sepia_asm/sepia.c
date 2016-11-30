@@ -31,13 +31,6 @@ sepia(struct image_t* const src, struct image_t* const result, char** argv) {
 			r[j] = pixels[i+j].r;
 		}
 		sse(r, g, b, p);
-		for(j = 0; j < 12; j++) {
-			if(p[j] > 255)
-				p[j] = 255;
-		}
-		/*printf("%f %f %f ", p[0], p[1], p[2], p[3]);
-		printf("%f %f %f %f ", p[4], p[5], p[6], p[7]);
-		printf("%f %f %f %f\n", p[8], p[9], p[10], p[11]);*/
 		for(j = 0; j < 4; j++) {
 			result->pixels[i+j].b = p[3*j];
 			result->pixels[i+j].g = p[3*j+1];

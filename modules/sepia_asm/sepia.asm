@@ -29,6 +29,9 @@ align 16
 c2_3: dd 0.769, 0.543, 0.686, 0.769
 align 16
 c3_3: dd 0.189, 0.131, 0.168, 0.189 
+
+align 16 
+max: dd 255.0, 255.0, 255.0, 255.0
 sse:
 	
 	movq xmm0, [rdi]
@@ -45,6 +48,10 @@ sse:
 	mulps xmm2, xmm5
 	addps xmm0, xmm1
 	addps xmm0, xmm2
+	
+	movdqa xmm1, [rel max]
+	pminsw xmm0, xmm1
+	
 	movdqa [rcx], xmm0
 	
 	add rdi, 4	
@@ -66,6 +73,10 @@ sse:
 	mulps xmm2, xmm5
 	addps xmm0, xmm1
 	addps xmm0, xmm2
+	
+	movdqa xmm1, [rel max]
+	pminsw xmm0, xmm1
+	
 	movdqa [rcx], xmm0
 	
 	add rdi, 4	
@@ -87,6 +98,10 @@ sse:
 	mulps xmm2, xmm5
 	addps xmm0, xmm1
 	addps xmm0, xmm2
+	
+	movdqa xmm1, [rel max]
+	pminsw xmm0, xmm1
+	
 	movdqa [rcx], xmm0
 	
 	;movq xmm0, [rcx]
