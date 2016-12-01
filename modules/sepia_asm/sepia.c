@@ -10,9 +10,9 @@ void sse( float*, float*, float*, float*);
 
 bmp_transform_error_code_t
 sepia(struct image_t* const src, struct image_t* const result, char** argv) {
-	float b[3];
-	float g[3];
-	float r[3];
+	float b[4];
+	float g[4];
+	float r[4];
 	float p[12];
 	
 	size_t i, j, size;

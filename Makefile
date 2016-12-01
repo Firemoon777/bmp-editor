@@ -1,8 +1,8 @@
 CC=gcc
 ASM=nasm
 ASMFLAGS=-f elf64 -g
-CFLAGS= -ansi -c -std=c89 -g -Wall -Werror -I./include/ 
-SFLAGS= -shared -std=c89 -g -Wall -Werror -I./include/ -fPIC -lm 
+CFLAGS= -O3 -ansi -c -std=c11 -g -march=x86_64 -Wall -Werror -I./include/ 
+SFLAGS= -shared -O3 -march=x86_64 -std=c11 -g -Wall -Werror -I./include/ -fPIC -lm 
 SRC=$(wildcard src/*.c)
 OBJ=$(SRC:src/%.c=build/%.o)
 PROJECT_NAME=bmp-editor
